@@ -117,7 +117,7 @@ const ICO = {
   arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>', back: '<path d="M19 12H5M11 6l-6 6 6 6"/>', up: '<path d="M12 19V5M5 12l7-7 7 7"/>', share: '<circle cx="18" cy="5" r="2.500"/><circle cx="6" cy="12" r="2.500"/><circle cx="18" cy="19" r="2.500"/><path d="M8.300 10.800l7.400-4.200M8.300 13.200l7.400 4.200"/>',
   search: '<circle cx="11" cy="11" r="6.500"/><path d="M20 20l-4.200-4.200"/>', plus: '<path d="M12 5v14M5 12h14"/>', check: '<path d="M5 12.500l4.500 4.500L19 7"/>', heart: '<path d="M12 20s-7-4.300-7-10a4 4 0 0 1 7-2.600A4 4 0 0 1 19 10c0 5.700-7 10-7 10z"/>',
   wa: '<path d="M4 20l1.300-4A8 8 0 1 1 8 19z"/><path d="M9.500 9.500c0 2.800 2.200 5 5 5l.8-1.400-1.800-.9-.8.600a3 3 0 0 1-1.600-1.600l.6-.8-.9-1.800z"/>', phone: '<path d="M5 4h4l2 5-2.500 1.500a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A15 15 0 0 1 4 5a1 1 0 0 1 1-1z"/>',
-  home: '<path d="M4 11l8-7 8 7M6 10v10h12V10M10 20v-6h4v6"/>', brush: '<path d="M14 4l6 6-8 8-6-6zM6 12l-2 8 8-2"/>', drop: '<path d="M12 3s6 6.500 6 11a6 6 0 0 1-12 0c0-4.500 6-11 6-11z"/>', wood: '<path d="M4 7h16v10H4zM4 12h16M9 7v10M15 7v10"/>', door: '<path d="M6 21V3h12v18M3 21h18M15 12v.01"/>'
+  home: '<path d="M4 11l8-7 8 7M6 10v10h12V10M10 20v-6h4v6"/>', pin: '<path d="M12 21s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.500"/>', brush: '<path d="M14 4l6 6-8 8-6-6zM6 12l-2 8 8-2"/>', drop: '<path d="M12 3s6 6.500 6 11a6 6 0 0 1-12 0c0-4.500 6-11 6-11z"/>', wood: '<path d="M4 7h16v10H4zM4 12h16M9 7v10M15 7v10"/>', door: '<path d="M6 21V3h12v18M3 21h18M15 12v.01"/>'
 };
 const ico = (k, s = 20) => `<svg class="ic" viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO[k]}</svg>`;
 const BRANDS = [
@@ -149,6 +149,17 @@ function servicesHTML() {
   return `<section class="sec svc"><div class="w"><div class="center"><div class="eyebrow">Hamari Services</div><h2 class="h2">Poora ghar, ek hi team</h2><p class="lead" style="margin-inline:auto">Interior, exterior, waterproofing aur wood solutions, ek jagah se. Card dabao aur seedha poochho.</p></div>
   <div class="svc-g">${SERVICES.map(s => `<button class="svc-c" data-a="svc" data-s="${esc(s[2])}"><img src="${s[1]}" alt="${s[0]}" loading="lazy"><span>${s[0]}</span></button>`).join('')}</div></div></section>`;
 }
+const ABHI = { p: '9876963879', n: 'Abhishek Rana' };
+function ownersHTML() {
+  const msg = 'Namaste Abhishek ji, main Rana Paints Shades website se baat kar raha hoon.';
+  return `<section class="sec dark owners"><div class="w own-g"><figure class="own-photo"><img src="images/abhishek.webp" width="709" height="958" alt="Abhishek Rana" loading="lazy"><figcaption>Abhishek Rana</figcaption></figure>
+  <div class="own-txt"><div class="eyebrow">Dukaan aur dukaandaar</div><h2 class="h2 big">Rana Paint Hardware and Cement Store</h2>
+  <p class="own-loc">${ico('pin', 18)} Passi Kandi</p>
+  <div class="own-names"><div><b>Daler Singh Rana</b><span>Owner</span></div><div><b>Abhishek Rana</b><span>Owner</span></div></div>
+  <blockquote class="own-quote">Main Instagram pe nahi, deewaron pe rang chadhata hoon. Rang chunne me dimaag ghoom jaaye to ghabrana mat, ek WhatsApp karo, main chai peete peete sab sambhal lunga.</blockquote>
+  <p class="own-ph">Abhishek Rana: <b>98769 63879</b></p>
+  <div class="row"><a class="btn wa" target="_blank" rel="noopener" href="${waLink(ABHI.p, msg)}">${ico('wa', 18)} WhatsApp karo</a><a class="btn gold" href="tel:+91${ABHI.p}">${ico('phone', 18)} Call karo</a></div></div></div></section>`;
+}
 P.home = () => {
   const stepsData = [['room', 'Brand chuno', 'Asian Paints, Berger ya Birla Opus. Har brand ka apna shade card aur apne looks.'], ['pal', 'Look chuno', 'Interior ya exterior, kamra chuno aur apni pasand ka design dekho, shades ke naam aur code ke saath.'], ['eye', 'Preview dekho', 'Asli kamre ki photo par rang laga ke dekho, ya apne ghar ki photo daalo.'], ['chat', 'WhatsApp pe bhejo', 'Poori list Daler Singh Rana ya Manjit Rana ko seedha chali jaati hai.']];
   return `<section class="hs" id="hs" aria-roledescription="carousel" aria-label="Brands">
@@ -165,6 +176,7 @@ P.home = () => {
   <div class="card"><h3>Rang Gyan</h3><p>Vastu, finish, roshni aur kitni paint lagegi, sab kuch aasaan Hinglish me.</p><p style="margin-top:12px"><a class="btn line sm" href="#/guide">Padho</a></p></div>
   <div class="card"><h3>Ghar ke ideas</h3><p>North India ke gharon ke liye ready color combinations, har kamre ke hisaab se.</p><p style="margin-top:12px"><a class="btn line sm" href="#/ideas">Ideas dekho</a></p></div></div></div></section>
   ${galleryHTML() ? `<section class="sec"><div class="w">${galleryHTML()}</div></section>` : ''}
+  ${ownersHTML()}
   <section class="sec"><div class="w"><div class="eyebrow">Seedha baat</div><h2 class="h2">Rang chun liya? Hum se baat karo.</h2><p class="lead">Dono me se kisi ko bhi WhatsApp ya call karo.</p>${people()}</div></section>
   <section class="sec alt"><div class="w faq"><div class="eyebrow">Aksar poochhe jaane wale sawaal</div><h2 class="h2" style="margin-bottom:20px">FAQ</h2>${faq()}</div></section>`;
 };
