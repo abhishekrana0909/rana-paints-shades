@@ -149,7 +149,7 @@ function servicesHTML() {
   return `<section class="sec svc"><div class="w"><div class="center"><div class="eyebrow">Hamari Services</div><h2 class="h2">Poora ghar, ek hi team</h2><p class="lead" style="margin-inline:auto">Interior, exterior, waterproofing aur wood solutions, ek jagah se. Card dabao aur seedha poochho.</p></div>
   <div class="svc-g">${SERVICES.map(s => `<button class="svc-c" data-a="svc" data-s="${esc(s[2])}"><img src="${s[1]}" alt="${s[0]}" loading="lazy"><span>${s[0]}</span></button>`).join('')}</div></div></section>`;
 }
-const ABHI = { p: '9876963879', n: 'Abhishek Rana', ig: '', igId: '' };
+const ABHI = { p: '9876963879', n: 'Abhishek Rana', ig: 'https://www.instagram.com/dwon13', igId: '@dwon13' };
 const SHOPN = 'Rana Paint Hardware and Cement Store';
 function shopHTML() {
   return `<section class="sec shop"><div class="w center"><div class="eyebrow">Hamari dukaan</div><h2 class="h2 big">${SHOPN}</h2><p class="own-loc2">${ico('pin', 18)} Passi Kandi</p><p class="lead" style="margin:6px auto 0">Paint, hardware aur cement, sab ek hi jagah.</p>
