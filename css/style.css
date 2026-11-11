@@ -571,3 +571,27 @@ main{min-height:60vh;outline:0}
 .own-quote{font-family:var(--hf);font-style:italic;font-size:clamp(1.1rem,2.2vw,1.45rem);line-height:1.5;color:#FFE9C0;border-left:3px solid var(--gold);padding-left:18px;margin:0 0 20px;max-width:34ch}
 .own-ph{margin-bottom:14px;color:#e8d9bd}.own-ph b{color:#fff;letter-spacing:.04em}
 @media(max-width:860px){.own-g{grid-template-columns:minmax(0,1fr)}.own-photo{max-width:320px}.own-txt .h2{max-width:none}}
+
+/* ===== shop strip, hero shop name, black & white owner card ===== */
+.hs-shop{display:inline-flex;align-items:center;gap:8px;font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:#FFE0A0;border:1px solid rgba(255,224,160,.55);border-radius:99px;padding:7px 16px;margin-bottom:18px;background:rgba(20,8,4,.35);backdrop-filter:blur(4px)}
+.shop{background:linear-gradient(180deg,#f7f1e6,#fcf6ea)}
+.own-loc2{display:inline-flex;align-items:center;gap:8px;color:var(--maroon);font-weight:600;margin-top:4px}
+.shop-own{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:22px}
+.shop-own div{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 26px;box-shadow:var(--sh2)}
+.shop-own b{display:block;font-family:var(--hf);font-size:1.2rem;color:var(--maroon-d)}
+.shop-own span{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.owners.bw{position:relative;isolation:isolate;background:#0d0d0e;color:#f2f2f2;overflow:hidden}
+.owners.bw::before{content:"";position:absolute;inset:0;z-index:-2;background:url(../images/abhishek.webp) right center/cover;filter:grayscale(1) contrast(1.05);opacity:.34;transform:scale(1.05)}
+.owners.bw::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(8,8,9,.94) 0%,rgba(8,8,9,.78) 45%,rgba(8,8,9,.5) 100%)}
+.owners.bw .eyebrow{color:#cfcfcf}
+.owners.bw .h2{color:#fff}
+.owners.bw .own-photo::before{border-color:rgba(255,255,255,.55)}
+.owners.bw .own-photo img{filter:grayscale(1)}
+.owners.bw .own-photo figcaption{background:rgba(255,255,255,.95);color:#111}
+.owners.bw .own-quote{color:#f4f4f4;border-left-color:#fff}
+.owners.bw .own-ph{color:#cfcfcf}.owners.bw .own-ph b{color:#fff}
+.btn.ghost-w{background:transparent;border:1.5px solid rgba(255,255,255,.8);color:#fff;box-shadow:none}
+.btn.ghost-w:hover{background:#fff;color:#111}
+.btn.igb{background:linear-gradient(135deg,#F58529,#DD2A7B 55%,#8134AF);box-shadow:0 8px 22px rgba(221,42,123,.35)}
+.btn.igb:hover{filter:brightness(1.08)}
+@media(max-width:560px){.hs-shop{font-size:.62rem;letter-spacing:.1em;padding:6px 12px;max-width:100%}}
