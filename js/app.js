@@ -153,13 +153,13 @@ function heroInit() {
   const h = $('#hero2'); if (!h) return;
   const list = D.hero.map(i => SH[i]), A = $('#wlA'), Bl = $('#wlB'), roller = $('#roller'), reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   HR.list = list; HR.i = 0; HR.busy = false;
-  const setText = s => { const tc = textOn(s.h); h.style.setProperty('--hink', tc); h.style.setProperty('--hsh', tc === '#fff' ? 'rgba(0,0,0,.30)' : 'rgba(255,255,255,.40)'); $('#htxt').textContent = BN[s.b] + ' · ' + s.n + ' · ' + s.c; $('#hadd').dataset.k = s.k; $$('#hchips button').forEach((b, n) => b.classList.toggle('on', n === HR.i)); };
+  const setText = s => { if (!$('#htxt') || !$('#hero2')) return; const tc = textOn(s.h); h.style.setProperty('--hink', tc); h.style.setProperty('--hsh', tc === '#fff' ? 'rgba(0,0,0,.30)' : 'rgba(255,255,255,.40)'); $('#htxt').textContent = BN[s.b] + ' · ' + s.n + ' · ' + s.c; $('#hadd').dataset.k = s.k; $$('#hchips button').forEach((b, n) => b.classList.toggle('on', n === HR.i)); };
   A.style.background = list[0].h; setText(list[0]);
   function paintTo(n, from) {
     if (HR.busy || !$('#hero2')) return; const s = list[n]; HR.busy = true; HR.i = n; Bl.style.background = s.h; roller.style.setProperty('--rc', s.h);
     if (reduce || !Bl.animate) { A.style.background = s.h; setText(s); HR.busy = false; return; }
     const W = h.clientWidth, Hh = h.clientHeight; let anim;
-    const done = () => { A.style.background = s.h; anim.cancel(); roller.style.opacity = 0; HR.busy = false; };
+    const done = () => { if (!$('#hero2')) return; A.style.background = s.h; anim.cancel(); roller.style.opacity = 0; HR.busy = false; };
     if (from) {
       anim = Bl.animate([{ clipPath: `circle(0px at ${from.x}px ${from.y}px)` }, { clipPath: `circle(${Math.hypot(W, Hh)}px at ${from.x}px ${from.y}px)` }], { duration: 1100, easing: 'cubic-bezier(.3,.7,.2,1)', fill: 'forwards' });
       setTimeout(() => setText(s), 350);
