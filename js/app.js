@@ -159,10 +159,16 @@ function ownersHTML() {
   const msg = 'Namaste Abhishek ji, main Rana Paints Shades website se baat kar raha hoon.';
   const ig = ABHI.ig ? `<a class="btn igb" target="_blank" rel="noopener" href="${esc(ABHI.ig)}">${ico('ig', 18)} Instagram${ABHI.igId ? ' · ' + esc(ABHI.igId) : ''}</a>` : '';
   return `<section class="sec owners bw"><div class="w own-g"><figure class="own-photo"><img src="images/abhishek.webp" width="709" height="958" alt="Abhishek Rana" loading="lazy"><figcaption>Abhishek Rana</figcaption></figure>
-  <div class="own-txt"><div class="eyebrow">Mujhse milo</div><h2 class="h2 big">Abhishek Rana</h2>
+  <div class="own-txt"><div class="eyebrow">Chhote Owner</div><h2 class="h2 big">Abhishek Rana</h2>
   <blockquote class="own-quote">Main Instagram pe nahi, deewaron pe rang chadhata hoon. Rang chunne me dimaag ghoom jaaye to ghabrana mat, ek WhatsApp karo, main chai peete peete sab sambhal lunga.</blockquote>
   <p class="own-ph">Contact: <b>98769 63879</b></p>
   <div class="row"><a class="btn wa" target="_blank" rel="noopener" href="${waLink(ABHI.p, msg)}">${ico('wa', 18)} WhatsApp karo</a><a class="btn ghost-w" href="tel:+91${ABHI.p}">${ico('phone', 18)} Call karo</a>${ig}</div></div></div></section>`;
+}
+const LIGHTS = [['Safed (White)', 'F5F3EE'], ['Cream', 'F3E6CF'], ['Ivory / Off White', 'EFE9DA'], ['Halka Peela', 'F6E9A9'], ['Peach', 'F8D9C1'], ['Halka Gulabi', 'F4D8DC'], ['Mint (Halka Hara)', 'D9EBD8'], ['Aasmani (Sky Blue)', 'D3E6F2'], ['Lavender', 'E4DCF0'], ['Sand / Beige', 'E2D3B6']];
+function lightHTML() {
+  return `<section class="sec lightsec"><div class="w"><div class="center"><div class="eyebrow">Halke rang</div><h2 class="h2 big">Jo ghar ko roshan rakhein</h2><p class="lead" style="margin-inline:auto">Gaon aur chhote shehron me sabse zyada pasand kiye jaane wale halke shades, teeno brands ke asli naam aur code ke saath.</p></div>
+  <div class="lp-g">${LIGHTS.map(([n, hx]) => { const lb = lab('#' + hx); const dark = textOn('#' + hx); return `<article class="lp-c"><div class="lp-top" style="background:#${hx};color:${dark}"><b>${n}</b></div><div class="lp-rows">${[0, 1, 2].map(bi => { const [dd, t] = nearestIn(lb, bi, 1)[0]; return `<button class="lp-r" data-a="open" data-i="${t.i}"><i style="background:${t.h}"></i><div><small>${BN[bi]}</small><b>${esc(t.n)}</b><span>${esc(t.c)}</span></div></button>`; }).join('')}</div></article>`; }).join('')}</div>
+  <div class="row lp-links" style="justify-content:center">${BRANDS.map(b => `<a class="btn line sm" href="#/brand/${b.slug}">${b.name}: poora shade card ${ico('arrow', 16)}</a>`).join('')}</div></div></section>`;
 }
 P.home = () => {
   const stepsData = [['room', 'Brand chuno', 'Asian Paints, Berger ya Birla Opus. Har brand ka apna shade card aur apne looks.'], ['pal', 'Look chuno', 'Interior ya exterior, kamra chuno aur apni pasand ka design dekho, shades ke naam aur code ke saath.'], ['eye', 'Preview dekho', 'Asli kamre ki photo par rang laga ke dekho, ya apne ghar ki photo daalo.'], ['chat', 'WhatsApp pe bhejo', 'Poori list Daler Singh Rana ya Manjit Rana ko seedha chali jaati hai.']];
@@ -170,17 +176,13 @@ P.home = () => {
   ${BRANDS.map((b, i) => `<article class="hs-slide${i ? '' : ' on'}" style="--bg:url(../images/d/${DS.hero[b.id]}.webp)" aria-label="${b.name}"><div class="hs-in w"><div class="hs-shop">${ico('pin', 15)} ${SHOPN} · Passi Kandi</div><a class="hs-logo" href="#/brand/${b.slug}" aria-label="${b.name}"><img src="${b.logo}" alt="${b.name}"></a><h1>${b.l1}<br><em>${b.l2}</em></h1><p>${b.sub}</p><div class="row"><a class="hbtn" href="#/brand/${b.slug}">${b.name} dekho</a><a class="hbtn ghost" href="#/brand/${b.slug}/interior">Interior looks</a></div></div></article>`).join('')}
   <button class="hs-arr prev" aria-label="Pichla">${bigArrow('l')}</button><button class="hs-arr next" aria-label="Agla">${bigArrow('r')}</button>
   <div class="hs-dots" role="tablist">${BRANDS.map((b, i) => `<button class="${i ? '' : 'on'}" style="--c:${b.col}" aria-label="${b.name}"></button>`).join('')}</div></section>
+  ${shopHTML()}
   <section class="sec intro"><div class="w center"><div class="eyebrow">Rana Paints</div><h2 class="h2 big">Andar se bahar tak, poore ghar ka rang-saathi.</h2><p class="lead" style="margin-inline:auto">Rana Paints me hum sirf deewarein nahi rangte, aapke ghar ki kahani rangte hain. Asian Paints, Berger aur Birla Opus ke ${SH.length.toLocaleString('en-IN')} asli shades se rang chuno, kamre me dekho, aur baaki sab humpe chhod do.</p></div></section>
   <section class="sec dark"><div class="w"><div class="center"><div class="eyebrow">Teen brands, ek jagah</div><h2 class="h2">Apna brand chuno</h2><p class="lead" style="margin-inline:auto">Har brand ka apna shade card, interior aur exterior looks.</p></div>
   <div class="bcards">${BRANDS.map(b => { const n = SH.filter(s => s.b === b.bi).length, cnt = Object.values(DS.lists[b.id]).reduce((a, l) => a + l.length, 0); return `<a class="bcard" href="#/brand/${b.slug}" style="--c:${b.col}"><img src="${dimg(DS.hero[b.id], '-s')}" alt="" loading="lazy"><div class="bc-in"><span class="bc-logo"><img src="${b.logo}" alt="${b.name}"></span><h3>${b.name}</h3><p>${n.toLocaleString('en-IN')} shades · ${cnt} looks</p><span class="bc-go">Explore ${ico('arrow', 18)}</span></div></a>`; }).join('')}</div></div></section>
   ${servicesHTML()}
-  <section class="sec alt"><div class="w"><div class="eyebrow">Hamari khaas cheezein</div><h2 class="h2">Sirf shades nahi, poora saath</h2>
-  <div class="cards"><div class="card"><h3>Rang Dhundo</h3><p>Apni saree, parde, ya kisi photo ka rang chuno aur dekho teeno brands me sabse close shade kaunsa hai.</p><p style="margin-top:12px"><a class="btn line sm" href="#/finder">Try karo</a></p></div>
-  <div class="card"><h3>Asli kamre me preview</h3><p>Asli kamron ki photos par rang laga ke dekho, ya apne ghar ki photo daalo, aur picture save karo.</p><p style="margin-top:12px"><a class="btn line sm" href="#/preview">Preview dekho</a></p></div>
-  <div class="card"><h3>Rang Gyan</h3><p>Vastu, finish, roshni aur kitni paint lagegi, sab kuch aasaan Hinglish me.</p><p style="margin-top:12px"><a class="btn line sm" href="#/guide">Padho</a></p></div>
-  <div class="card"><h3>Ghar ke ideas</h3><p>North India ke gharon ke liye ready color combinations, har kamre ke hisaab se.</p><p style="margin-top:12px"><a class="btn line sm" href="#/ideas">Ideas dekho</a></p></div></div></div></section>
+  ${lightHTML()}
   ${galleryHTML() ? `<section class="sec"><div class="w">${galleryHTML()}</div></section>` : ''}
-  ${shopHTML()}
   ${ownersHTML()}
   <section class="sec"><div class="w"><div class="eyebrow">Seedha baat</div><h2 class="h2">Rang chun liya? Hum se baat karo.</h2><p class="lead">Dono me se kisi ko bhi WhatsApp ya call karo.</p>${people()}</div></section>
   <section class="sec alt"><div class="w faq"><div class="eyebrow">Aksar poochhe jaane wale sawaal</div><h2 class="h2" style="margin-bottom:20px">FAQ</h2>${faq()}</div></section>`;
@@ -220,6 +222,9 @@ function crumbs(parts) { return `<nav class="crumbs w" aria-label="Rasta">${part
 function bhero(b, title, sub, extra) {
   return `<section class="bh" style="--bg:url(../images/d/${DS.hero[b.id]}.webp)"><div class="bh-in w"><a class="hs-logo" href="#/brand/${b.slug}"><img src="${b.logo}" alt="${b.name}"></a><h1><em>${title}</em></h1><p>${sub}</p>${extra || ''}</div></section>`;
 }
+const DG = { n: 18, b: null, l: null };
+function dgCard(b, id) { const d = DS.designs[id]; return `<article class="dcard"><a href="#/design/${b.slug}/${id}" class="dc-img"><img src="${dimg(id, '-s')}" alt="${esc(d.title)}" loading="lazy"></a><div class="dc-in"><h3>${esc(d.title)}</h3><div class="dc-sw">${d.m.map(m => `<i style="background:${SH[m[b.bi]].h}"></i>`).join('')}</div><a class="btn line sm" href="#/design/${b.slug}/${id}">Is look ko dekho</a></div></article>`; }
+function dgInner(b, l) { DG.b = b; DG.l = l; return `<div class="dgrid">${l.slice(0, DG.n).map(id => dgCard(b, id)).join('')}</div>${l.length > DG.n ? `<div class="more"><button class="btn line" data-a="dmore">Aur looks dikhao (${l.length - DG.n} baaki)</button></div>` : ''}`; }
 P.brand = args => {
   const b = BS[args[0]]; if (!b) return P.home(); SC_BRAND = b; const sub = args[1], room = args[2];
   if (!sub) {
@@ -240,7 +245,7 @@ P.brand = args => {
   return crumbs([[b.name, '#/brand/' + b.slug], sub === 'exterior' ? ['Exterior'] : ['Interior', '#/brand/' + b.slug + '/interior'], ...(sub === 'exterior' ? [] : [[dRoomName(key)]])]) +
     `<section class="sec" style="padding-top:20px"><div class="w"><div class="eyebrow">${b.name}</div><h1 class="h2 big">${sub === 'exterior' ? 'Exterior looks' : dRoomName(key) + ' looks'}</h1><p class="lead">${l.length} looks. Kisi par click karo, shades ke naam aur code ke saath poora detail dekho.</p>
     ${sub === 'exterior' ? '' : `<div class="rtabs">${rooms.map(r => `<a class="${r === key ? 'on' : ''}" href="#/brand/${b.slug}/interior/${r}">${dRoomName(r)}</a>`).join('')}</div>`}
-    <div class="dgrid">${l.map(id => { const d = DS.designs[id]; return `<article class="dcard"><a href="#/design/${b.slug}/${id}" class="dc-img"><img src="${dimg(id, '-s')}" alt="${esc(d.title)}" loading="lazy"></a><div class="dc-in"><h3>${esc(d.title)}</h3><div class="dc-sw">${d.m.map(m => `<i style="background:${SH[m[b.bi]].h}"></i>`).join('')}</div><a class="btn line sm" href="#/design/${b.slug}/${id}">Is look ko dekho</a></div></article>`; }).join('')}</div></div></section>`;
+    <div id="dgwrap">${dgInner(b, l)}</div></div></section>`;
 };
 P.design = args => {
   const b = BS[args[0]], d = b && DS.designs[args[1]]; if (!d) return P.home();
@@ -252,7 +257,7 @@ P.design = args => {
     <h4 class="dd-h">Is look se milte shades</h4><div class="dd-sh">${uniq.map(s => `<button class="dd-s" data-a="open" data-i="${s.i}"><i style="background:${s.h}"></i><b>${esc(s.n)}</b><span>${BN[s.b]} · ${esc(s.c)}</span></button>`).join('')}</div>
     <p class="note">Photo ke deewar ke rang ke sabse paas ke ${b.name} ke asli shades. Final shade hamesha physical shade card se confirm karo.</p>
     <div class="row" style="margin-top:6px"><button class="btn" data-a="dadd" data-b="${b.slug}" data-d="${d.id}">${ico('plus', 18)} Is look ko meri list me jodo</button><button class="btn wa" data-a="dwa" data-b="${b.slug}" data-d="${d.id}">${ico('wa', 18)} WhatsApp pe poochho</button></div>
-    <p class="credit">Photo: Unsplash</p></div></div>
+    <p class="credit">Photo: ${d.src === 'p' ? 'Pexels' : 'Unsplash'}</p></div></div>
     <div class="w dd-pn"><a href="#/design/${b.slug}/${pv.id}"><img src="${dimg(pv.id, '-s')}" alt=""><div><small>Pichla look</small><b>${esc(pv.title)}</b></div>${bigArrow('l')}</a><a href="#/design/${b.slug}/${nx.id}"><img src="${dimg(nx.id, '-s')}" alt=""><div><small>Agla look</small><b>${esc(nx.title)}</b></div>${bigArrow('r')}</a></div></section>
     <section class="sec"><div class="w"><div class="eyebrow">Aur looks</div><h2 class="h2">${d.room === 'exterior' ? 'Aur exterior looks' : 'Aur ' + dRoomName(d.room) + ' looks'}</h2><div class="dgrid">${l.filter(x => x !== d.id).slice(0, 6).map(id => { const e = DS.designs[id]; return `<article class="dcard"><a href="#/design/${b.slug}/${id}" class="dc-img"><img src="${dimg(id, '-s')}" alt="${esc(e.title)}" loading="lazy"></a><div class="dc-in"><h3>${esc(e.title)}</h3><a class="btn line sm" href="#/design/${b.slug}/${id}">Is look ko dekho</a></div></article>`; }).join('')}</div><p style="margin-top:22px"><a class="btn line" href="${back}">Saare ${l.length} looks dekho</a></p></div></section>`;
 };
@@ -488,7 +493,7 @@ const TITLES = { brand: 'Brand | Rana Paints Shades', design: 'Look | Rana Paint
 function hparts() { return location.hash.replace(/^#\/?/, '').split('?')[0].split('/').filter(Boolean); }
 function route() { const r = hparts()[0] || 'home'; return P[r] ? r : 'home'; }
 function render() {
-  heroStop(); const r = route(), pr = hparts(), args = pr[0] === r ? pr.slice(1) : []; $('#app').innerHTML = P[r](args); footer(); roombar();
+  heroStop(); DG.n = 18; const r = route(), pr = hparts(), args = pr[0] === r ? pr.slice(1) : []; $('#app').innerHTML = P[r](args); footer(); roombar();
   const nk = (r === 'brand' || r === 'design') ? 'brand-' + pr[1] : r; let ttl = TITLES[r];
   if (r === 'brand' && BS[pr[1]]) ttl = BS[pr[1]].name + ' – shade card aur looks | Rana Paints Shades'; if (r === 'design' && DS.designs[pr[2]]) ttl = DS.designs[pr[2]].title + ' | Rana Paints Shades'; document.title = ttl || TITLES.home;
   $$('#nav a').forEach(a => a.classList.toggle('on', a.dataset.r === nk)); $('#nav').classList.remove('open'); $('#burger').setAttribute('aria-expanded', 'false');
@@ -533,6 +538,7 @@ const H = {
   hadd: t => { if (t.dataset.k && addShade(t.dataset.k)) { toast(RM[S.active].s + ' me jud gaya'); roombar(); } },
   top: () => window.scrollTo({ top: 0, behavior: 'smooth' }),
   scfam: t => { SCS.fam = +t.dataset.v; SCS.n = { l: 48, m: 48, d: 48 }; SCS.q = ''; const q = $('#scq'); if (q) q.value = ''; $$('#sctabs .chip').forEach(c => c.classList.toggle('on', c === t)); drawSC(); },
+  dmore: () => { DG.n += 18; const w = $('#dgwrap'); if (w) w.innerHTML = dgInner(DG.b, DG.l); },
   scmore: t => { SCS.n[t.dataset.t] += 48; drawSC(); },
   scroll: t => { const el = $(t.dataset.t); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); },
   svc: t => contactModal('Namaste, mujhe ' + t.dataset.s + ' ke baare me baat karni hai.', t.dataset.s),
