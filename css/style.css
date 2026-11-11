@@ -595,3 +595,14 @@ main{min-height:60vh;outline:0}
 .btn.igb{background:linear-gradient(135deg,#F58529,#DD2A7B 55%,#8134AF);box-shadow:0 8px 22px rgba(221,42,123,.35)}
 .btn.igb:hover{filter:brightness(1.08)}
 @media(max-width:560px){.hs-shop{font-size:.62rem;letter-spacing:.1em;padding:6px 12px;max-width:100%}}
+
+/* owner card: no frame, rich lettering */
+.owners.bw .own-photo::before{display:none}
+.owners.bw .own-photo img{border-radius:20px;box-shadow:0 40px 70px -24px rgba(0,0,0,.85)}
+.owners.bw .eyebrow{font-family:'Cinzel',Georgia,serif;font-weight:600;letter-spacing:.34em;font-size:.78rem;color:#d9d9d9}
+.owners.bw .h2{font-family:'Cinzel',Georgia,serif;font-style:normal;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:clamp(2rem,4.6vw,3.4rem);line-height:1.1;margin-bottom:16px;background:linear-gradient(180deg,#fff,#c9c9c9);-webkit-background-clip:text;background-clip:text;color:transparent}
+.owners.bw .own-quote{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:600;font-size:clamp(1.35rem,2.8vw,1.9rem);line-height:1.4;letter-spacing:.005em;color:#f6f6f6;max-width:30ch}
+.owners.bw .own-ph{font-family:'Cinzel',Georgia,serif;font-weight:500;letter-spacing:.12em;font-size:.92rem;text-transform:uppercase;color:#bdbdbd}
+.owners.bw .own-ph b{font-weight:700;letter-spacing:.14em;color:#fff;font-size:1.15rem;margin-left:6px}
+.owners.bw .btn{font-family:'Cinzel',Georgia,serif;font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:.78rem;padding:13px 24px}
+.owners.bw .own-photo figcaption{font-family:'Cinzel',Georgia,serif;letter-spacing:.14em;text-transform:uppercase;font-size:.72rem;font-weight:700}
