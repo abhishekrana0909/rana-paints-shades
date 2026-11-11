@@ -13,6 +13,7 @@ const ROOMS = [
   { id: 'dining', n: 'Dining Area', s: 'Dining', g: 'linear-gradient(135deg,#B3472E,#6E2A1A)', d: 'Khaane ki jagah' },
   { id: 'passage', n: 'Passage / Seedhiyan', s: 'Passage', g: 'linear-gradient(135deg,#9A9A94,#5E5E5A)', d: 'Galiyaare aur staircase' },
   { id: 'exterior', n: 'Bahar ki Deewarein', s: 'Bahar', g: 'linear-gradient(135deg,#D4A537,#7E5A1A)', d: 'Elevation aur boundary' },
+  { id: 'bathroom', n: 'Bathroom', s: 'Bathroom', g: 'linear-gradient(135deg,#7FB5B8,#2F6A74)', d: 'Nahane ka kamra' },
   { id: 'other', n: 'Baaki / Alag Jagah', s: 'Alag list', g: 'linear-gradient(135deg,#8E7CC3,#4B3D80)', d: 'Terrace, store, office...' },
 ];
 const RM = Object.fromEntries(ROOMS.map(r => [r.id, r]));
@@ -110,73 +111,138 @@ function openPicker(cb, title) {
 
 /* ---------- pages ---------- */
 const P = {};
-// HOME
+// HOME + BRANDS + DESIGNS (v3)
+const DS = window.RPD;
+const ICO = {
+  arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>', back: '<path d="M19 12H5M11 6l-6 6 6 6"/>', up: '<path d="M12 19V5M5 12l7-7 7 7"/>', share: '<circle cx="18" cy="5" r="2.500"/><circle cx="6" cy="12" r="2.500"/><circle cx="18" cy="19" r="2.500"/><path d="M8.300 10.800l7.400-4.200M8.300 13.200l7.400 4.200"/>',
+  search: '<circle cx="11" cy="11" r="6.500"/><path d="M20 20l-4.200-4.200"/>', plus: '<path d="M12 5v14M5 12h14"/>', check: '<path d="M5 12.500l4.500 4.500L19 7"/>', heart: '<path d="M12 20s-7-4.300-7-10a4 4 0 0 1 7-2.600A4 4 0 0 1 19 10c0 5.700-7 10-7 10z"/>',
+  wa: '<path d="M4 20l1.300-4A8 8 0 1 1 8 19z"/><path d="M9.500 9.500c0 2.800 2.200 5 5 5l.8-1.400-1.800-.9-.8.600a3 3 0 0 1-1.600-1.600l.6-.8-.9-1.800z"/>', phone: '<path d="M5 4h4l2 5-2.500 1.500a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A15 15 0 0 1 4 5a1 1 0 0 1 1-1z"/>',
+  home: '<path d="M4 11l8-7 8 7M6 10v10h12V10M10 20v-6h4v6"/>', brush: '<path d="M14 4l6 6-8 8-6-6zM6 12l-2 8 8-2"/>', drop: '<path d="M12 3s6 6.500 6 11a6 6 0 0 1-12 0c0-4.500 6-11 6-11z"/>', wood: '<path d="M4 7h16v10H4zM4 12h16M9 7v10M15 7v10"/>', door: '<path d="M6 21V3h12v18M3 21h18M15 12v.01"/>'
+};
+const ico = (k, s = 20) => `<svg class="ic" viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO[k]}</svg>`;
+const BRANDS = [
+  { id: 'ap', slug: 'asian', bi: 0, name: 'Asian Paints', logo: 'images/logos/ap.png', col: '#E4472B', l1: 'Rang aapka,', l2: 'kaam hamara.', sub: 'Asian Paints ke asli shades, apne ghar ke hisaab se. Chuno, dekho aur WhatsApp pe bhej do.', tag: 'Har deewar ke liye, ek bharosemand naam.' },
+  { id: 'be', slug: 'berger', bi: 1, name: 'Berger Paints', logo: 'images/logos/be.png', col: '#2A4BA0', l1: 'Ghar ko do', l2: 'apni pehchaan.', sub: 'Berger Paints ke shades ka poora card, naam aur code ke saath. Pasand aaye to hum rang bhi karenge.', tag: 'Sau saal se zyada ka rang-bharosa.' },
+  { id: 'bo', slug: 'birla', bi: 2, name: 'Birla Opus', logo: 'images/logos/bo.svg', col: '#6A4C93', l1: 'Rang jo dil se', l2: 'jud jaaye.', sub: 'Birla Opus ke naye zamane ke shades aur looks. Apne kamre ke liye sahi rang yahin se chuno.', tag: 'Naye zamane ka rang, nayi soch.' },
+];
+const BS = Object.fromEntries(BRANDS.map(b => [b.slug, b]));
+const ROOM_TO = { living: 'hall', bedroom: 'bedroom', kitchen: 'kitchen', bathroom: 'bathroom', kids: 'kids', dining: 'dining', pooja: 'pooja', exterior: 'exterior' };
+const dimg = (id, k = '') => `images/d/${id}${k}.webp`;
+const dRoomName = r => DS.rooms[r] || r;
+const bigArrow = d => ico(d === 'l' ? 'back' : 'arrow', 22);
 const IC = {
   room: '<path d="M5 21V4h9l5 2v15M5 21h14M12 12h.01"/>',
-  pal: '<path d="M12 3a9 9 0 1 0 0 18c1.5 0 2-1 1.6-2.2-.4-1.2.4-2.3 1.6-2.3H17a4 4 0 0 0 4-4C21 6.600 17 3 12 3z"/><circle cx="7.500" cy="11" r="1"/><circle cx="10.500" cy="7" r="1"/><circle cx="15" cy="7.500" r="1"/>',
+  pal: '<path d="M12 3a9 9 0 1 0 0 18c1.500 0 2-1 1.600-2.200-.4-1.200.4-2.300 1.600-2.300H17a4 4 0 0 0 4-4C21 6.600 17 3 12 3z"/><circle cx="7.500" cy="11" r="1"/><circle cx="10.500" cy="7" r="1"/><circle cx="15" cy="7.500" r="1"/>',
   eye: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
   chat: '<path d="M4 20l1.300-4A8 8 0 1 1 8 19z"/><path d="M9 10h6M9 13h4"/>',
 };
 const ic = k => `<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]}</svg>`;
+function contactModal(msg, title) {
+  modal(`<div class="mbody" style="padding-top:34px"><h3 style="font-size:1.6rem;color:var(--maroon-d)">${title || 'Hum se baat karo'}</h3><p class="lead">Dono me se kisi ko bhi WhatsApp ya call karo.</p>${people(msg)}</div>`);
+}
 function galleryHTML() {
   const g = window.RPS_GALLERY || []; if (!g.length) return '';
   return `<div class="sec" style="padding-bottom:10px"><div class="eyebrow">Hamare kiye hue ghar</div><h2 class="h2">Asli kaam, asli shades</h2><div class="gal">${g.map(x => `<figure class="gf"><img src="${esc(x.img)}" alt="${esc(x.title || 'Rana Paints ka kaam')}" loading="lazy"><figcaption><b>${esc(x.title || '')}</b>${x.place ? `<span>${esc(x.place)}</span>` : ''}<div class="gs">${(x.shades || []).map(k => { const s = KEY.get(k); return s ? `<button data-a="open" data-i="${s.i}" title="${esc(shadeLabel(s))}"><i style="background:${s.h}"></i>${BN[s.b].split(' ')[0]} ${esc(s.c)}</button>` : ''; }).join('')}</div></figcaption></figure>`).join('')}</div></div>`;
 }
+const SERVICES = [['Interior Painting', 'images/d/living-12-s.webp', 'Interior Painting'], ['Exterior Painting', 'images/d/exterior-08-s.webp', 'Exterior Painting'], ['Waterproofing', 'images/svc/water.webp', 'Waterproofing'], ['Wood Solutions', 'images/svc/wood.webp', 'Wood Solutions']];
+function servicesHTML() {
+  return `<section class="sec svc"><div class="w"><div class="center"><div class="eyebrow">Hamari Services</div><h2 class="h2">Poora ghar, ek hi team</h2><p class="lead" style="margin-inline:auto">Interior, exterior, waterproofing aur wood solutions, ek jagah se. Card dabao aur seedha poochho.</p></div>
+  <div class="svc-g">${SERVICES.map(s => `<button class="svc-c" data-a="svc" data-s="${esc(s[2])}"><img src="${s[1]}" alt="${s[0]}" loading="lazy"><span>${s[0]}</span></button>`).join('')}</div></div></section>`;
+}
 P.home = () => {
-  const stepsData = [['room', 'Kamra chuno', 'Hall, bedroom, kitchen, pooja room ya bahar ki deewar. Har kamre ki apni list banti hai.'], ['pal', 'Rang chuno', 'Asian Paints, Berger ya Birla Opus ke shades search karo, ya hamare ready combinations utha lo.'], ['eye', 'Preview dekho', 'Asli kamre ki photo par rang laga ke dekho, ya apne ghar ki photo daalo. Bina ek boond paint ke.'], ['chat', 'WhatsApp pe bhejo', 'Naam aur ghar ki detail bharo. Poori list Daler Singh Rana ya Manjit Rana ko seedha chali jaati hai.']];
-  return `<section class="hero2" id="hero2" aria-label="Rana Paints Shades">
-  <div class="wl wl-a" id="wlA"></div><div class="wl wl-b" id="wlB"></div><div class="wtex"></div><div class="wlight"></div>
-  <div class="roller" id="roller" aria-hidden="true"><svg viewBox="0 0 120 120" width="110" height="110"><rect x="12" y="12" width="82" height="32" rx="9" fill="var(--rc,#fff)" stroke="#2A1810" stroke-width="3.500"/><rect x="18" y="17" width="70" height="7" rx="3.500" fill="#fff" opacity=".35"/><path d="M94 28h10a6 6 0 0 1 6 6v12a6 6 0 0 1-6 6H62v14" fill="none" stroke="#2A1810" stroke-width="5" stroke-linecap="round"/><rect x="53" y="66" width="18" height="46" rx="7" fill="#8C2B1F" stroke="#2A1810" stroke-width="3.500"/></svg></div>
-  <div class="hw w"><div class="heyebrow">Asian Paints · Berger · Birla Opus</div>
-  <h1>Rang aapka,<br><em>kaam hamara.</em></h1>
-  <p>${SH.length.toLocaleString('en-IN')} asli shades. Chuno, apne kamre me dekho, aur WhatsApp pe bhej do.</p>
-  <div class="row" style="justify-content:center"><a class="hbtn" href="#/shades">Shades dekho</a><a class="hbtn ghost" href="#/preview">Kamre me preview</a></div></div>
-  <div class="hbar"><div class="htag" id="htag"><span id="htxt"></span><button data-a="hadd" id="hadd">+ Meri list</button></div><div class="hchips" id="hchips" role="group" aria-label="Rang badal ke dekho">${D.hero.map((i, n) => `<button data-a="hpaint" data-i="${n}" style="background:${SH[i].h}" aria-label="${esc(SH[i].n)} lagao"></button>`).join('')}</div><div class="hhint">Deewar par kahin bhi click karo, rang badal jaayega</div></div>
-  <div class="skirt"></div></section>
+  const stepsData = [['room', 'Brand chuno', 'Asian Paints, Berger ya Birla Opus. Har brand ka apna shade card aur apne looks.'], ['pal', 'Look chuno', 'Interior ya exterior, kamra chuno aur apni pasand ka design dekho, shades ke naam aur code ke saath.'], ['eye', 'Preview dekho', 'Asli kamre ki photo par rang laga ke dekho, ya apne ghar ki photo daalo.'], ['chat', 'WhatsApp pe bhejo', 'Poori list Daler Singh Rana ya Manjit Rana ko seedha chali jaati hai.']];
+  return `<section class="hs" id="hs" aria-roledescription="carousel" aria-label="Brands">
+  ${BRANDS.map((b, i) => `<article class="hs-slide${i ? '' : ' on'}" style="--bg:url(../images/d/${DS.hero[b.id]}.webp)" aria-label="${b.name}"><div class="hs-in w"><a class="hs-logo" href="#/brand/${b.slug}" aria-label="${b.name}"><img src="${b.logo}" alt="${b.name}"></a><h1>${b.l1}<br><em>${b.l2}</em></h1><p>${b.sub}</p><div class="row"><a class="hbtn" href="#/brand/${b.slug}">${b.name} dekho</a><a class="hbtn ghost" href="#/brand/${b.slug}/interior">Interior looks</a></div></div></article>`).join('')}
+  <button class="hs-arr prev" aria-label="Pichla">${bigArrow('l')}</button><button class="hs-arr next" aria-label="Agla">${bigArrow('r')}</button>
+  <div class="hs-dots" role="tablist">${BRANDS.map((b, i) => `<button class="${i ? '' : 'on'}" style="--c:${b.col}" aria-label="${b.name}"></button>`).join('')}</div></section>
+  <section class="sec intro"><div class="w center"><div class="eyebrow">Rana Paints</div><h2 class="h2 big">Andar se bahar tak, poore ghar ka rang-saathi.</h2><p class="lead" style="margin-inline:auto">Rana Paints me hum sirf deewarein nahi rangte, aapke ghar ki kahani rangte hain. Asian Paints, Berger aur Birla Opus ke ${SH.length.toLocaleString('en-IN')} asli shades se rang chuno, kamre me dekho, aur baaki sab humpe chhod do.</p></div></section>
+  <section class="sec dark"><div class="w"><div class="center"><div class="eyebrow">Teen brands, ek jagah</div><h2 class="h2">Apna brand chuno</h2><p class="lead" style="margin-inline:auto">Har brand ka apna shade card, interior aur exterior looks.</p></div>
+  <div class="bcards">${BRANDS.map(b => { const n = SH.filter(s => s.b === b.bi).length, cnt = Object.values(DS.lists[b.id]).reduce((a, l) => a + l.length, 0); return `<a class="bcard" href="#/brand/${b.slug}" style="--c:${b.col}"><img src="${dimg(DS.hero[b.id], '-s')}" alt="" loading="lazy"><div class="bc-in"><span class="bc-logo"><img src="${b.logo}" alt="${b.name}"></span><h3>${b.name}</h3><p>${n.toLocaleString('en-IN')} shades · ${cnt} looks</p><span class="bc-go">Explore ${ico('arrow', 18)}</span></div></a>`; }).join('')}</div></div></section>
+  ${servicesHTML()}
   <section class="sec stepsec"><div class="w"><div class="eyebrow">Kaise kaam karta hai</div><h2 class="h2">4 kadam, bas.</h2>
   <div class="tl4">${stepsData.map((x, i) => `<div class="tstep"><div class="tn">${i + 1}</div><div class="tcard"><div class="tic">${ic(x[0])}</div><h3>${x[1]}</h3><p>${x[2]}</p></div></div>`).join('')}</div></div></section>
   <section class="sec"><div class="w"><div class="eyebrow">Kamre ke hisaab se</div><h2 class="h2">Kaunsa kamra rangna hai?</h2><p class="lead">Kamra chuno aur uske ready combinations dekho.</p>
-  <div class="tiles">${ROOMS.filter(r => r.id !== 'other').map(r => `<a class="tile" style="--img:url(../images/rooms/${r.id}.webp?v=2)" href="#/ideas" data-a="gotoroom" data-r="${r.id}"><h3>${r.n}</h3><span>${r.d}</span></a>`).join('')}</div></div></section>
+  <div class="tiles">${ROOMS.filter(r => !['other', 'bathroom'].includes(r.id)).map(r => `<a class="tile" style="--img:url(../images/rooms/${r.id}.webp?v=2)" href="#/ideas" data-a="gotoroom" data-r="${r.id}"><h3>${r.n}</h3><span>${r.d}</span></a>`).join('')}</div></div></section>
   <section class="sec alt"><div class="w"><div class="eyebrow">Hamari khaas cheezein</div><h2 class="h2">Sirf shades nahi, poora saath</h2>
   <div class="cards"><div class="card"><h3>Rang Dhundo</h3><p>Apni saree, parde, ya kisi photo ka rang chuno aur dekho teeno brands me sabse close shade kaunsa hai.</p><p style="margin-top:12px"><a class="btn line sm" href="#/finder">Try karo</a></p></div>
   <div class="card"><h3>Asli kamre me preview</h3><p>Asli kamron ki photos par rang laga ke dekho, ya apne ghar ki photo daalo, aur picture save karo.</p><p style="margin-top:12px"><a class="btn line sm" href="#/preview">Preview dekho</a></p></div>
   <div class="card"><h3>Rang Gyan</h3><p>Vastu, finish, roshni aur kitni paint lagegi, sab kuch aasaan Hinglish me.</p><p style="margin-top:12px"><a class="btn line sm" href="#/guide">Padho</a></p></div>
-  <div class="card"><h3>Poore ghar ka theka</h3><p>Hum sirf rang nahi dikhate, poora ghar paint bhi karte hain. Deewar ki taiyari se safai tak.</p><p style="margin-top:12px"><a class="btn line sm" href="#/service">Hamara kaam</a></p></div></div></div></section>
+  <div class="card"><h3>Ghar ke ideas</h3><p>North India ke gharon ke liye ready color combinations, har kamre ke hisaab se.</p><p style="margin-top:12px"><a class="btn line sm" href="#/ideas">Ideas dekho</a></p></div></div></div></section>
   ${galleryHTML() ? `<section class="sec"><div class="w">${galleryHTML()}</div></section>` : ''}
   <section class="sec"><div class="w"><div class="eyebrow">Seedha baat</div><h2 class="h2">Rang chun liya? Hum se baat karo.</h2><p class="lead">Dono me se kisi ko bhi WhatsApp ya call karo.</p>${people()}</div></section>
   <section class="sec alt"><div class="w faq"><div class="eyebrow">Aksar poochhe jaane wale sawaal</div><h2 class="h2" style="margin-bottom:20px">FAQ</h2>${faq()}</div></section>`;
 };
-/* hero: wall that gets painted by a roller */
-const HR = { i: 0, busy: false, timer: null, io: null, vis: true, list: [], paint: null };
-function heroStop() { if (HR.timer) clearInterval(HR.timer); HR.timer = null; if (HR.io) HR.io.disconnect(); HR.io = null; HR.paint = null; }
+/* slider */
+const HS = { i: 0, t: null, go: null };
+function heroStop() { if (HS.t) clearInterval(HS.t); HS.t = null; }
 function heroInit() {
-  const h = $('#hero2'); if (!h) return;
-  const list = D.hero.map(i => SH[i]), A = $('#wlA'), Bl = $('#wlB'), roller = $('#roller'), reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  HR.list = list; HR.i = 0; HR.busy = false;
-  const setText = s => { if (!$('#htxt') || !$('#hero2')) return; const tc = textOn(s.h); h.style.setProperty('--hink', tc); h.style.setProperty('--hsh', tc === '#fff' ? 'rgba(0,0,0,.30)' : 'rgba(255,255,255,.40)'); $('#htxt').textContent = BN[s.b] + ' · ' + s.n + ' · ' + s.c; $('#hadd').dataset.k = s.k; $$('#hchips button').forEach((b, n) => b.classList.toggle('on', n === HR.i)); };
-  A.style.background = list[0].h; setText(list[0]);
-  function paintTo(n, from) {
-    if (HR.busy || !$('#hero2')) return; const s = list[n]; HR.busy = true; HR.i = n; Bl.style.background = s.h; roller.style.setProperty('--rc', s.h);
-    if (reduce || !Bl.animate) { A.style.background = s.h; setText(s); HR.busy = false; return; }
-    const W = h.clientWidth, Hh = h.clientHeight; let anim;
-    const done = () => { if (!$('#hero2')) return; A.style.background = s.h; anim.cancel(); roller.style.opacity = 0; HR.busy = false; };
-    if (from) {
-      anim = Bl.animate([{ clipPath: `circle(0px at ${from.x}px ${from.y}px)` }, { clipPath: `circle(${Math.hypot(W, Hh)}px at ${from.x}px ${from.y}px)` }], { duration: 1100, easing: 'cubic-bezier(.3,.7,.2,1)', fill: 'forwards' });
-      setTimeout(() => setText(s), 350);
-    } else {
-      const N = 8, rk = []; for (let i = 0; i <= N; i++) rk.push({ transform: `translate(${W * i / N - 52}px,${(i % 2 ? .76 : .14) * Hh - 44}px) rotate(${i % 2 ? -10 : 10}deg)`, offset: i / N });
-      anim = Bl.animate([{ clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)' }], { duration: 2400, easing: 'linear', fill: 'forwards' });
-      roller.style.opacity = 1; roller.animate(rk, { duration: 2400, easing: 'linear', fill: 'forwards' });
-      setTimeout(() => setText(s), 1200);
-    }
-    anim.onfinish = done;
-  }
-  HR.paint = paintTo;
-  const arm = () => { if (HR.timer) clearInterval(HR.timer); if (reduce) return; HR.timer = setInterval(() => { if (!document.hidden && HR.vis && !HR.busy) paintTo((HR.i + 1) % list.length); }, 6500); };
-  h.addEventListener('click', e => { if (e.target.closest('a,button,.htag')) return; const r = h.getBoundingClientRect(); paintTo((HR.i + 1) % list.length, { x: e.clientX - r.left, y: e.clientY - r.top }); arm(); });
-  if ('IntersectionObserver' in window) { HR.io = new IntersectionObserver(es => { HR.vis = es[0].isIntersecting; }, { threshold: .25 }); HR.io.observe(h); }
-  setTimeout(() => { if ($('#hero2') === h && !HR.busy) paintTo(1); }, 1600); arm();
+  const h = $('#hs'); if (!h) return; const sl = $$('.hs-slide', h), dots = $$('.hs-dots button', h); HS.i = 0;
+  const go = n => { HS.i = (n + sl.length) % sl.length; sl.forEach((s, k) => s.classList.toggle('on', k === HS.i)); dots.forEach((d, k) => d.classList.toggle('on', k === HS.i)); };
+  const arm = () => { heroStop(); if (matchMedia('(prefers-reduced-motion: reduce)').matches) return; HS.t = setInterval(() => { if (!document.hidden && !h.matches(':hover')) go(HS.i + 1); }, 6500); };
+  dots.forEach((d, k) => d.addEventListener('click', () => { go(k); arm(); }));
+  $('.hs-arr.prev', h).addEventListener('click', () => { go(HS.i - 1); arm(); }); $('.hs-arr.next', h).addEventListener('click', () => { go(HS.i + 1); arm(); });
+  let x0 = null; h.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true }); h.addEventListener('touchend', e => { if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) { go(HS.i + (dx < 0 ? 1 : -1)); arm(); } x0 = null; });
+  arm();
 }
+/* brand shade card */
+const SCS = { fam: 0, q: '', n: { l: 48, m: 48, d: 48 } };
+const TONES = [['l', 'Halka (Light)', 'Roshan, naram shades'], ['m', 'Medium', 'Madhyam gehraai ke shades'], ['d', 'Gehra (Dark)', 'Gehre, bhaari shades']];
+function shadeCardHTML(b) {
+  const all = SH.filter(s => s.b === b.bi), fams = FAM.map((f, i) => [i, f, all.filter(s => s.f === i).length]).filter(x => x[2]);
+  if (!fams.find(x => x[0] === SCS.fam)) SCS.fam = fams[0][0];
+  return `<section class="sec alt" id="shadecard"><div class="w"><div class="eyebrow">Asli shade card</div><h2 class="h2">${b.name} ka shade card</h2><p class="lead">${all.length.toLocaleString('en-IN')} shades, naam aur code ke saath. Rang par click karo, bada preview aur list me jodna wahin hai.</p>
+  <div class="scbar"><label class="search"><span class="sico">${ico('search', 18)}</span><input id="scq" type="search" placeholder="${b.name} ka shade dhundo: naam ya code" value="${esc(SCS.q)}" aria-label="Shade dhundo"></label></div>
+  <div class="tabs sctabs" id="sctabs" role="tablist">${fams.map(([i, f, n]) => `<button class="chip${i === SCS.fam ? ' on' : ''}" data-a="scfam" data-v="${i}"><i class="dot" style="background:${FAMC[i]}"></i>${f} <small>${n}</small></button>`).join('')}</div>
+  <div id="scbody"></div></div></section>`;
+}
+function drawSC(b) {
+  const el = $('#scbody'); if (!el) return; b = b || SC_BRAND; const all = SH.filter(s => s.b === b.bi), q = SCS.q.toLowerCase().trim(), qc = q.replace(/\s/g, '');
+  const tile = s => `<button class="sct" data-a="open" data-i="${s.i}" title="${esc(s.n)} ${esc(s.c)}"><i style="background:${s.h}"></i><b>${esc(s.n)}</b><span>${esc(s.c)}</span></button>`;
+  if (q) { const l = all.filter(s => s.nl.includes(q) || s.cl.includes(qc) || s.h.toLowerCase() === '#' + qc.replace('#', '')); el.innerHTML = `<div class="cnt">${l.length} shades mile</div><div class="scgrid">${l.slice(0, 150).map(tile).join('') || '<div class="empty" style="grid-column:1/-1">Kuch nahi mila</div>'}</div>${l.length > 150 ? '<p class="note">Pehle 150 dikha rahe hain. Search aur chhota karo.</p>' : ''}`; return; }
+  const fam = all.filter(s => s.f === SCS.fam);
+  el.innerHTML = TONES.map(([t, name, d]) => { const l = fam.filter(s => s.t === t); if (!l.length) return ''; return `<div class="tonegrp"><div class="tonehd"><h3>${name}</h3><span>${l.length} shades · ${d}</span></div><div class="scgrid">${l.slice(0, SCS.n[t]).map(tile).join('')}</div>${l.length > SCS.n[t] ? `<div class="more"><button class="btn line sm" data-a="scmore" data-t="${t}">Aur ${Math.min(48, l.length - SCS.n[t])} shades dikhao (${l.length - SCS.n[t]} baaki)</button></div>` : ''}</div>`; }).join('') || '<div class="empty">Is rang family me is brand ke shades nahi hain.</div>';
+}
+let SC_BRAND = BRANDS[0];
+function crumbs(parts) { return `<nav class="crumbs w" aria-label="Rasta">${parts.map((p, i) => p[1] ? `<a href="${p[1]}">${p[0]}</a>` : `<span>${p[0]}</span>`).join('<i>›</i>')}</nav>`; }
+function bhero(b, title, sub, extra) {
+  return `<section class="bh" style="--bg:url(../images/d/${DS.hero[b.id]}.webp)"><div class="bh-in w"><a class="hs-logo" href="#/brand/${b.slug}"><img src="${b.logo}" alt="${b.name}"></a><h1><em>${title}</em></h1><p>${sub}</p>${extra || ''}</div></section>`;
+}
+P.brand = args => {
+  const b = BS[args[0]]; if (!b) return P.home(); SC_BRAND = b; const sub = args[1], room = args[2];
+  if (!sub) {
+    setTimeout(() => { drawSC(b); const i = $('#scq'); if (i) i.addEventListener('input', e => { SCS.q = e.target.value; drawSC(b); }); }, 0);
+    const ni = Object.values(DS.lists[b.id]).reduce((a, l, k) => a + (Object.keys(DS.lists[b.id])[k] === 'exterior' ? 0 : l.length), 0);
+    return bhero(b, b.name, b.tag + ' ' + b.sub, `<div class="row"><button class="hbtn" data-a="scroll" data-t="#shadecard">Shade card dekho</button><button class="hbtn ghost" data-a="svc" data-s="${b.name} ke shades">WhatsApp pe poochho</button></div>`) +
+      `<section class="sec"><div class="w"><div class="center"><div class="eyebrow">${b.name}</div><h2 class="h2">Kya dekhna chahte ho?</h2></div><div class="twocards">
+      <a class="pcard" href="#/brand/${b.slug}/interior"><img src="${dimg(DS.lists[b.id].living[0], '-s')}" alt="" loading="lazy"><span>Interior ${ico('arrow', 18)}<small>${ni} looks · 7 kamre</small></span></a>
+      <a class="pcard" href="#/brand/${b.slug}/exterior"><img src="${dimg(DS.lists[b.id].exterior[0], '-s')}" alt="" loading="lazy"><span>Exterior ${ico('arrow', 18)}<small>${DS.lists[b.id].exterior.length} looks</small></span></a></div></div></section>` + shadeCardHTML(b) + servicesHTML();
+  }
+  if (sub === 'interior' && !room) {
+    const rooms = ['living', 'bedroom', 'kitchen', 'bathroom', 'kids', 'dining', 'pooja'];
+    return crumbs([[b.name, '#/brand/' + b.slug], ['Interior']]) + `<section class="sec" style="padding-top:20px"><div class="w"><div class="eyebrow">${b.name}</div><h1 class="h2 big">Interior: get inspired</h1><p class="lead">Kamra chuno aur uske ready looks dekho, shades ke naam aur code ke saath.</p>
+    <div class="rgrid">${rooms.map(r => `<a class="rcard" href="#/brand/${b.slug}/interior/${r}"><img src="${dimg(DS.lists[b.id][r][0], '-t')}" alt="" loading="lazy"><h3>${dRoomName(r)}</h3><span>${DS.lists[b.id][r].length} looks ${ico('arrow', 18)}</span></a>`).join('')}</div></div></section>`;
+  }
+  const rooms = ['living', 'bedroom', 'kitchen', 'bathroom', 'kids', 'dining', 'pooja'], key = sub === 'exterior' ? 'exterior' : room; if (!DS.lists[b.id][key]) return P.brand([b.slug]);
+  const l = DS.lists[b.id][key];
+  return crumbs([[b.name, '#/brand/' + b.slug], sub === 'exterior' ? ['Exterior'] : ['Interior', '#/brand/' + b.slug + '/interior'], ...(sub === 'exterior' ? [] : [[dRoomName(key)]])]) +
+    `<section class="sec" style="padding-top:20px"><div class="w"><div class="eyebrow">${b.name}</div><h1 class="h2 big">${sub === 'exterior' ? 'Exterior looks' : dRoomName(key) + ' looks'}</h1><p class="lead">${l.length} looks. Kisi par click karo, shades ke naam aur code ke saath poora detail dekho.</p>
+    ${sub === 'exterior' ? '' : `<div class="rtabs">${rooms.map(r => `<a class="${r === key ? 'on' : ''}" href="#/brand/${b.slug}/interior/${r}">${dRoomName(r)}</a>`).join('')}</div>`}
+    <div class="dgrid">${l.map(id => { const d = DS.designs[id]; return `<article class="dcard"><a href="#/design/${b.slug}/${id}" class="dc-img"><img src="${dimg(id, '-s')}" alt="${esc(d.title)}" loading="lazy"></a><div class="dc-in"><h3>${esc(d.title)}</h3><div class="dc-sw">${d.m.map(m => `<i style="background:${SH[m[b.bi]].h}"></i>`).join('')}</div><a class="btn line sm" href="#/design/${b.slug}/${id}">Is look ko dekho</a></div></article>`; }).join('')}</div></div></section>`;
+};
+P.design = args => {
+  const b = BS[args[0]], d = b && DS.designs[args[1]]; if (!d) return P.home();
+  const l = DS.lists[b.id][d.room] || [], i = Math.max(0, l.indexOf(d.id)), pv = DS.designs[l[(i - 1 + l.length) % l.length]], nx = DS.designs[l[(i + 1) % l.length]], back = d.room === 'exterior' ? '#/brand/' + b.slug + '/exterior' : '#/brand/' + b.slug + '/interior/' + d.room;
+  const shs = d.m.map(m => SH[m[b.bi]]), seen = new Set(), uniq = shs.filter(s => !seen.has(s.k) && seen.add(s.k));
+  return crumbs([[b.name, '#/brand/' + b.slug], d.room === 'exterior' ? ['Exterior', back] : ['Interior', '#/brand/' + b.slug + '/interior'], ...(d.room === 'exterior' ? [] : [[dRoomName(d.room), back]]), [d.title]]) +
+    `<section class="ddet"><div class="w dd-g"><figure class="dd-fig"><img src="${dimg(d.id)}" width="${d.w}" height="${d.h}" alt="${esc(d.title)}"><a class="dd-nav l" href="#/design/${b.slug}/${pv.id}" aria-label="Pichla look">${bigArrow('l')}</a><a class="dd-nav r" href="#/design/${b.slug}/${nx.id}" aria-label="Agla look">${bigArrow('r')}</a><button class="dd-share" data-a="dshare" aria-label="Link copy karo">${ico('share', 20)}</button></figure>
+    <div class="dd-info"><div class="eyebrow">${b.name} · ${dRoomName(d.room)}</div><h1 class="h2">${esc(d.title)}</h1><p class="dd-desc">${esc(d.desc)}</p>
+    <h4 class="dd-h">Is look se milte shades</h4><div class="dd-sh">${uniq.map(s => `<button class="dd-s" data-a="open" data-i="${s.i}"><i style="background:${s.h}"></i><b>${esc(s.n)}</b><span>${BN[s.b]} · ${esc(s.c)}</span></button>`).join('')}</div>
+    <p class="note">Photo ke deewar ke rang ke sabse paas ke ${b.name} ke asli shades. Final shade hamesha physical shade card se confirm karo.</p>
+    <div class="row" style="margin-top:6px"><button class="btn" data-a="dadd" data-b="${b.slug}" data-d="${d.id}">${ico('plus', 18)} Is look ko meri list me jodo</button><button class="btn wa" data-a="dwa" data-b="${b.slug}" data-d="${d.id}">${ico('wa', 18)} WhatsApp pe poochho</button></div>
+    <p class="credit">Photo: Unsplash</p></div></div>
+    <div class="w dd-pn"><a href="#/design/${b.slug}/${pv.id}"><img src="${dimg(pv.id, '-s')}" alt=""><div><small>Pichla look</small><b>${esc(pv.title)}</b></div>${bigArrow('l')}</a><a href="#/design/${b.slug}/${nx.id}"><img src="${dimg(nx.id, '-s')}" alt=""><div><small>Agla look</small><b>${esc(nx.title)}</b></div>${bigArrow('r')}</a></div></section>
+    <section class="sec"><div class="w"><div class="eyebrow">Aur looks</div><h2 class="h2">${d.room === 'exterior' ? 'Aur exterior looks' : 'Aur ' + dRoomName(d.room) + ' looks'}</h2><div class="dgrid">${l.filter(x => x !== d.id).slice(0, 6).map(id => { const e = DS.designs[id]; return `<article class="dcard"><a href="#/design/${b.slug}/${id}" class="dc-img"><img src="${dimg(id, '-s')}" alt="${esc(e.title)}" loading="lazy"></a><div class="dc-in"><h3>${esc(e.title)}</h3><a class="btn line sm" href="#/design/${b.slug}/${id}">Is look ko dekho</a></div></article>`; }).join('')}</div><p style="margin-top:22px"><a class="btn line" href="${back}">Saare ${l.length} looks dekho</a></p></div></section>`;
+};
 
 const FAQ = [
   ['Kya yahan ke shades official hain?', 'Shade ke naam aur code Asian Paints, Berger aur Birla Opus ki public colour catalogue se liye gaye hain. Screen par dikhne wala rang (hex) sirf andaza hai, kyunki har screen alag dikhati hai.'],
@@ -242,7 +308,7 @@ function drawIdeas() {
 
 // PREVIEW (real photos, click a wall to paint it)
 const PS = PAINT.SCENES;
-const SCENE_FOR_ROOM = { hall: 'hall', bedroom: 'bedroom', kids: 'kids', kitchen: 'kitchen', pooja: 'hall', dining: 'hall', exterior: 'exterior', passage: 'hall', other: 'hall' };
+const SCENE_FOR_ROOM = { hall: 'hall', bedroom: 'bedroom', kids: 'kids', kitchen: 'kitchen', pooja: 'hall', dining: 'hall', exterior: 'exterior', passage: 'hall', bathroom: 'hall', other: 'hall' };
 const PV = { scene: 'hall', role: 'main', col: null, brand: 0, tol: 11, painter: null };
 function pvDefault(sc) {
   const room = PS[sc].room, c = D.combos.find(x => x.room === room) || D.combos[0];
@@ -399,17 +465,20 @@ function bindList() {
 /* ---------- footer ---------- */
 function footer() {
   $('#ft').innerHTML = `<div class="w"><div><h4>Rana Paints Shades</h4><p>Asian Paints, Berger aur Birla Opus ke shades ek jagah. Rana Paints ki taraf se, ghar ke paint theke ke saath.</p></div>
-  <div><h4>Jao</h4><a href="#/shades">Shades</a><a href="#/ideas">Ghar Ideas</a><a href="#/preview">Preview</a><a href="#/finder">Rang Dhundo</a><a href="#/guide">Rang Gyan</a><a href="#/service">Hamara Kaam</a></div>
+  <div><h4>Jao</h4><a href="#/brand/asian">Asian Paints</a><a href="#/brand/berger">Berger Paints</a><a href="#/brand/birla">Birla Opus</a><a href="#/shades">Saare Shades</a><a href="#/ideas">Ghar Ideas</a><a href="#/preview">Preview</a><a href="#/finder">Rang Dhundo</a><a href="#/guide">Rang Gyan</a><a href="#/service">Hamara Kaam</a></div>
   <div><h4>Sampark</h4>${PPL.map(p => `<a href="tel:+91${p.p}">${p.n}: ${p.p}</a>`).join('')}${PPL.map(p => `<a target="_blank" rel="noopener" href="${waLink(p.p)}">WhatsApp ${p.n.split(' ')[0]}</a>`).join('')}</div>
   <p class="fine">Asian Paints, Berger Paints aur Birla Opus unke apne maalikon ke trademark hain. Ye ek swatantra guide hai, jo Rana Paints ne apne grahkon ke liye banayi hai. Shade ke naam aur code unki public colour catalogue se hain. Screen par dikhne wala rang sirf andaza hai, final shade hamesha physical shade card se confirm karein. Photos Unsplash aur Pexels se, unke free licence ke tahat.</p><a class="totop-f" href="#" data-a="top">↑ Back to top</a></div>`;
 }
 
 /* ---------- router ---------- */
-const TITLES = { home: 'Rana Paints Shades – shades chuno aur WhatsApp karo', shades: 'Shades – Asian Paints, Berger, Birla Opus | Rana Paints Shades', ideas: 'Ghar ke rang combinations | Rana Paints Shades', preview: 'Kamre me rang preview | Rana Paints Shades', finder: 'Rang dhundo | Rana Paints Shades', guide: 'Rang gyan | Rana Paints Shades', service: 'Hamara kaam – poore ghar ka paint theka | Rana Paints Shades', list: 'Meri list | Rana Paints Shades' };
-function route() { const r = (location.hash.replace(/^#\/?/, '').split(/[?/]/)[0]) || 'home'; return P[r] ? r : 'home'; }
+const TITLES = { brand: 'Brand | Rana Paints Shades', design: 'Look | Rana Paints Shades', home: 'Rana Paints Shades – shades chuno aur WhatsApp karo', shades: 'Shades – Asian Paints, Berger, Birla Opus | Rana Paints Shades', ideas: 'Ghar ke rang combinations | Rana Paints Shades', preview: 'Kamre me rang preview | Rana Paints Shades', finder: 'Rang dhundo | Rana Paints Shades', guide: 'Rang gyan | Rana Paints Shades', service: 'Hamara kaam – poore ghar ka paint theka | Rana Paints Shades', list: 'Meri list | Rana Paints Shades' };
+function hparts() { return location.hash.replace(/^#\/?/, '').split('?')[0].split('/').filter(Boolean); }
+function route() { const r = hparts()[0] || 'home'; return P[r] ? r : 'home'; }
 function render() {
-  heroStop(); const r = route(); $('#app').innerHTML = P[r](); document.title = TITLES[r]; footer(); roombar();
-  $$('#nav a').forEach(a => a.classList.toggle('on', a.dataset.r === r)); $('#nav').classList.remove('open'); $('#burger').setAttribute('aria-expanded', 'false');
+  heroStop(); const r = route(), pr = hparts(), args = pr[0] === r ? pr.slice(1) : []; $('#app').innerHTML = P[r](args); footer(); roombar();
+  const nk = (r === 'brand' || r === 'design') ? 'brand-' + pr[1] : r; let ttl = TITLES[r];
+  if (r === 'brand' && BS[pr[1]]) ttl = BS[pr[1]].name + ' – shade card aur looks | Rana Paints Shades'; if (r === 'design' && DS.designs[pr[2]]) ttl = DS.designs[pr[2]].title + ' | Rana Paints Shades'; document.title = ttl || TITLES.home;
+  $$('#nav a').forEach(a => a.classList.toggle('on', a.dataset.r === nk)); $('#nav').classList.remove('open'); $('#burger').setAttribute('aria-expanded', 'false');
   if (r === 'finder') setTimeout(bindFinder, 0); if (r === 'list') bindList(); if (r === 'guide') { ['ca', 'cw', 'cc', 'cv'].forEach(id => $('#' + id).addEventListener('input', calc)); calc(); }
   if (!render.first) { render.first = 1; } else window.scrollTo(0, 0);
   if (r === 'home') heroInit();
@@ -450,6 +519,13 @@ const H = {
   hpaint: t => { const h = $('#hero2'), r = h.getBoundingClientRect(), b = t.getBoundingClientRect(); if (HR.paint) HR.paint(+t.dataset.i, { x: b.left + b.width / 2 - r.left, y: b.top + b.height / 2 - r.top }); },
   hadd: t => { if (t.dataset.k && addShade(t.dataset.k)) { toast(RM[S.active].s + ' me jud gaya'); roombar(); } },
   top: () => window.scrollTo({ top: 0, behavior: 'smooth' }),
+  scfam: t => { SCS.fam = +t.dataset.v; SCS.n = { l: 48, m: 48, d: 48 }; SCS.q = ''; const q = $('#scq'); if (q) q.value = ''; $$('#sctabs .chip').forEach(c => c.classList.toggle('on', c === t)); drawSC(); },
+  scmore: t => { SCS.n[t.dataset.t] += 48; drawSC(); },
+  scroll: t => { const el = $(t.dataset.t); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); },
+  svc: t => contactModal('Namaste, mujhe ' + t.dataset.s + ' ke baare me baat karni hai.', t.dataset.s),
+  dadd: t => { const b = BS[t.dataset.b], d = DS.designs[t.dataset.d], room = ROOM_TO[d.room]; let n = 0; const seen = new Set(); d.m.forEach(m => { const sh = SH[m[b.bi]]; if (!seen.has(sh.k)) { seen.add(sh.k); if (addShade(sh.k, room)) n++; } }); S.active = room; save(); roombar(); toast(n ? RM[room].s + ' me ' + n + ' shades jude' : 'Ye shades pehle se list me hain'); },
+  dwa: t => { const b = BS[t.dataset.b], d = DS.designs[t.dataset.d], seen = new Set(), sh = d.m.map(m => SH[m[b.bi]]).filter(s => !seen.has(s.k) && seen.add(s.k)); contactModal('Namaste, mujhe ' + b.name + ' ka "' + d.title + '" look pasand aaya (' + dRoomName(d.room) + ').\nShades: ' + sh.map(s => s.n + ' (' + s.c + ')').join(', ') + '.\nKripya is look ke liye estimate aur shade card batayein.', 'Is look ke baare me poochho'); },
+  dshare: () => { navigator.clipboard && navigator.clipboard.writeText(location.href).then(() => toast('Link copy ho gaya'), () => toast('Copy nahi hua')); },
 
   rm: t => { rmShade(t.dataset.r, t.dataset.k); render(); },
   send: () => { const m = buildMsg(), p = PPL[S.form.who || 0].p, u = waLink(p, m); if (u.length > 7000) toast('List bahut lambi hai, message copy karke WhatsApp me paste karo'); window.open(u, '_blank', 'noopener'); },
